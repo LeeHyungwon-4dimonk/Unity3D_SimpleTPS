@@ -175,7 +175,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10756, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 2100000, guid: c783c37c88f767340acad2d258aa72a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -524,7 +524,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <WalkSpeed>k__BackingField: 2
   <RunSpeed>k__BackingField: 4
-  <RotateSpeed>k__BackingField: 0
+  <RotateSpeed>k__BackingField: 10
 --- !u!1 &908088510
 GameObject:
   m_ObjectHideFlags: 0
