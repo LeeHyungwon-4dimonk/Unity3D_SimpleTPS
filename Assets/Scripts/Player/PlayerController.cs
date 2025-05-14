@@ -1,8 +1,5 @@
 using UnityEngine;
 
-// TODO : 참조 생성용 임시 네임스페이스 참조. 작업물 병합 시 삭제예정
-using PlayerMovement = A_Test.PlayerMovement;
-
 public class PlayerController : MonoBehaviour
 {
     public bool isControlActive { get; set; } = true;
@@ -11,7 +8,6 @@ public class PlayerController : MonoBehaviour
     private PlayerMovement _movement;
 
     [SerializeField] GameObject _aimCamera;
-    private GameObject _mainCamera;
 
     [SerializeField] private KeyCode _aimkey = KeyCode.Mouse1;
 
@@ -26,8 +22,7 @@ public class PlayerController : MonoBehaviour
     private void Init()
     {
         _status = GetComponent<PlayerStatus>();
-        _movement = GetComponent<PlayerMovement>();
-        _mainCamera = Camera.main.gameObject;
+        _movement = GetComponent<PlayerMovement>();        
     }
 
     private void HandlePlayerControl()
@@ -39,7 +34,21 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
-        // TODO : Movement 병합 시 기능 추가 예정
+        Vector3 camRotateDir = _movement.SetAimRotation();
+
+        float moveSpeed;
+        if (_status.IsAming.Value) moveSpeed = _status.WalkSpeed;
+        else moveSpeed = _status.RunSpeed;
+
+        Vector3 moveDir = _movement.SetMove(moveSpeed);
+        _status.IsMoving.Value = (moveDir != Vector3.zero);
+
+        // 몸체의 회전
+        Vector3 avatarDir;
+        if (_status.IsAming.Value) avatarDir = camRotateDir;
+        else avatarDir = moveDir;
+
+        _movement.SetAvatarRotation(avatarDir);
     }
 
     private void HandleAiming()
@@ -49,17 +58,11 @@ public class PlayerController : MonoBehaviour
 
     public void SubscribeEvents()
     {
-        _status.IsAming.Subscribe(value => SetActiveCamera(value));
+        _status.IsAming.Subscribe(_aimCamera.gameObject.SetActive);
     }
 
     public void UnsubscribeEvents()
     {
-        _status.IsAming.UnSubscribe(value => SetActiveCamera(value));
-    }
-
-    private void SetActiveCamera(bool value)
-    {
-        _aimCamera.SetActive(value);
-        _mainCamera.SetActive(!value);
+        _status.IsAming.UnSubscribe(_aimCamera.gameObject.SetActive);
     }
 }
