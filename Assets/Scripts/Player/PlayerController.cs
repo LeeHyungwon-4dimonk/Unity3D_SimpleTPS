@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 
     private PlayerStatus _status;
     private PlayerMovement _movement;
+    private Animator _animator;
 
     [SerializeField] GameObject _aimCamera;
 
@@ -22,7 +23,8 @@ public class PlayerController : MonoBehaviour
     private void Init()
     {
         _status = GetComponent<PlayerStatus>();
-        _movement = GetComponent<PlayerMovement>();        
+        _movement = GetComponent<PlayerMovement>();
+        _animator = GetComponent<Animator>();
     }
 
     private void HandlePlayerControl()
@@ -59,10 +61,14 @@ public class PlayerController : MonoBehaviour
     public void SubscribeEvents()
     {
         _status.IsAming.Subscribe(_aimCamera.gameObject.SetActive);
+        _status.IsAming.Subscribe(SetAimAnimation);
     }
 
     public void UnsubscribeEvents()
     {
         _status.IsAming.UnSubscribe(_aimCamera.gameObject.SetActive);
+        _status.IsAming.UnSubscribe(SetAimAnimation);
     }
+    
+    private void SetAimAnimation(bool value) => _animator.SetBool("IsAim", value);
 }
