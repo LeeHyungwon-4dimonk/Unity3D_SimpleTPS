@@ -141,3 +141,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f693cb6ebf127354eae2c48b8fa55491, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _bgmList: []
+  _sfxPrefab: {fileID: 4990755414837197823, guid: f4b29879b46bad64d924bbc07f6dbb94, type: 3}
