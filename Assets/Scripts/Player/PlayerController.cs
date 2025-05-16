@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class PlayerController : MonoBehaviour
     private PlayerMovement _movement;
     private Animator _animator;
 
+    [SerializeField] private Image _aimImage;
+    [SerializeField] private Animator _aimAnimator;
     [SerializeField] GameObject _aimCamera;
     [SerializeField] private Gun _gun;
 
@@ -24,6 +27,7 @@ public class PlayerController : MonoBehaviour
         _status = GetComponent<PlayerStatus>();
         _movement = GetComponent<PlayerMovement>();
         _animator = GetComponent<Animator>();
+        _aimImage = _aimAnimator.GetComponent<Image>();
     }
 
     private void HandlePlayerControl()
@@ -94,7 +98,12 @@ public class PlayerController : MonoBehaviour
         _status.IsAttacking.UnSubscribe(SetAttackAnimation);
     }
     
-    private void SetAimAnimation(bool value) => _animator.SetBool("IsAim", value);
+    private void SetAimAnimation(bool value)
+    {
+        if (!_aimImage.enabled) _aimImage.enabled = true;
+        _animator.SetBool("IsAim", value);
+        _aimAnimator.SetBool("IsAim", value);        
+    }
     private void SetMoveAniation(bool value) => _animator.SetBool("IsMove", value);
     private void SetAttackAnimation(bool value) => _animator.SetBool("IsAttack", value);
 }

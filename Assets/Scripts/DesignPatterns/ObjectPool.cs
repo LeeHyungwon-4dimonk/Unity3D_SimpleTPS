@@ -48,5 +48,4 @@ namespace DesignPattern
             PushPool(obj);
         }
     }
-
 }
