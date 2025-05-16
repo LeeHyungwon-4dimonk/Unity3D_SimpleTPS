@@ -3,7 +3,7 @@ using TMPro.SpriteAssetUtilities;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     public bool isControlActive { get; set; } = true;
 
