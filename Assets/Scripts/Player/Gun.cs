@@ -55,7 +55,7 @@ public class Gun : MonoBehaviour
     private IDamageable RayShoot()
     {
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
-        Debug.DrawRay(_camera.transform.position, _camera.transform.forward, Color.red, 5);
+        //Debug.DrawRay(_camera.transform.position, _camera.transform.forward, Color.red, 5);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, _attackRange, _targetLayer))

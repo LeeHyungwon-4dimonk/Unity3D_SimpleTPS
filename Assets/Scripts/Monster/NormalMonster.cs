@@ -42,7 +42,8 @@ public class NormalMonster : Monster, IDamageable
 
     private void HandleMove()
     {
-        if (_detectArea.TargetTransform == null) return;
+        if (_detectArea.TargetTransform == null) 
+        _animator.SetBool("IsMove", _detectArea.CanTracking);
 
         if (_detectArea.CanTracking)
         {
