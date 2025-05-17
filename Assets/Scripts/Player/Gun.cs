@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using Unity.VisualScripting;
 
 public class Gun : MonoBehaviour
 {
@@ -54,9 +55,10 @@ public class Gun : MonoBehaviour
     private IDamageable RayShoot()
     {
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
+        Debug.DrawRay(_camera.transform.position, _camera.transform.forward, Color.red, 5);
         RaycastHit hit;
 
-        if(Physics.Raycast(ray, out hit, _attackRange, _targetLayer))
+        if (Physics.Raycast(ray, out hit, _attackRange, _targetLayer))
         {
             return hit.transform.GetComponent<IDamageable>();
         }

@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleMovement();
         HandleAiming();
         HandleShooting();
+        Debug.DrawRay(_aimCamera.transform.position, _aimCamera.transform.forward, Color.red, 10);
 
         if(Input.GetKey(KeyCode.Q))
         {
