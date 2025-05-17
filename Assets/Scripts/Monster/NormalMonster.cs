@@ -1,16 +1,17 @@
 using DesignPattern;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Assertions.Must;
 
 public class NormalMonster : Monster, IDamageable
 {
     private bool _isActivateControl = true;
     private bool _canTracking = true;
     [SerializeField] private int MaxHp;
-    private ObservableProperty<int> CurrentHp;
+    private ObservableProperty<int> CurrentHp = new();
     private ObservableProperty<bool> IsMoving = new();
     private ObservableProperty<bool> IsAttacking = new();
+    private ObservableProperty<bool> IsDead = new();
+    private Animator _animator;
 
     [Header("Config Navmesh")]
     private NavMeshAgent _navMeshAgent;
@@ -18,12 +19,19 @@ public class NormalMonster : Monster, IDamageable
 
     private void Awake() => Init();
 
-    private void Update() => HandleControl();
+    private void Update()
+    {
+        HandleControl();
+        Death(IsDead.Value);
+    }
 
     private void Init()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshAgent.isStopped = true;
+        _animator = GetComponent<Animator>();
+        CurrentHp.Value = MaxHp;
+        IsDead.Value = true;
     }
 
     private void HandleControl()
@@ -43,10 +51,20 @@ public class NormalMonster : Monster, IDamageable
         }
         _navMeshAgent.isStopped = !_canTracking;
         IsMoving.Value = _canTracking;
+        _animator.SetBool("IsMove", _canTracking);
     }
 
     public void TakeDamage(int value)
     {
+        CurrentHp.Value -= value;
+        if (CurrentHp.Value <= 0)
+        {
+            IsDead.Value = false;
+        }
+    }
 
+    private void Death(bool value)
+    {
+        _animator.SetBool("IsAlive", value);
     }
 }
