@@ -41,6 +41,7 @@ public class Gun : MonoBehaviour
         if (target == null) return true;
 
         target.TakeDamage(_shootDamage);
+        //Debug.Log("공격받음!");
 
         return true;
     }
@@ -55,11 +56,12 @@ public class Gun : MonoBehaviour
     private IDamageable RayShoot()
     {
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
-        //Debug.DrawRay(_camera.transform.position, _camera.transform.forward, Color.red, 5);
+        //Debug.DrawRay(_camera.transform.position, _camera.transform.forward * 100, Color.red, 3);
         RaycastHit hit;
-
+        
         if (Physics.Raycast(ray, out hit, _attackRange, _targetLayer))
         {
+            //Debug.Log(hit.collider.name);
             return hit.transform.GetComponent<IDamageable>();
         }
 
