@@ -60,13 +60,14 @@ public class NormalMonster : Monster, IDamageable
         if (CurrentHp.Value <= 0)
         {
             IsAlive.Value = false;
+            Death(IsAlive.Value);
         }
     }
     
     private void Death(bool value)
     {
         _animator.SetBool("IsAlive", value);
-        if (IsAlive.Value == false)
+        if (value == false)
         {
             _isActivateControl = false;
             _navMeshAgent.speed = 0;

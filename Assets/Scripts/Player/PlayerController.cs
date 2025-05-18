@@ -1,5 +1,3 @@
-using TMPro.EditorUtilities;
-using TMPro.SpriteAssetUtilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -45,11 +43,11 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleShooting();
         //Debug.DrawRay(_aimCamera.transform.position, _aimCamera.transform.forward * 100, Color.red, 2);
 
-        if(Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.Q))
         {
             TakeDamage(1);
         }
-        if(Input.GetKey(KeyCode.E))
+        if (Input.GetKey(KeyCode.E))
         {
             RecoveryHP(1);
         }
@@ -100,7 +98,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void TakeDamage(int value)
     {
-        _status.CurrentHp.Value -=value;
+        _status.CurrentHp.Value -= value;
 
         if (_status.CurrentHp.Value <= 0) Dead();
     }
@@ -113,7 +111,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void Dead()
     {
-        Debug.Log("플레이어 사망 처리");
+        _animator.SetTrigger("IsAlive");        
+        isControlActive = false;
     }
 
     public void SubscribeEvents()
@@ -144,5 +143,5 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void SetAttackAnimation(bool value) => _animator.SetBool("IsAttack", value);
 
     private void SetHPUIGuage(int currentHp) => _hpUI.SetImageFillAmount((float)currentHp / _status.MaxHp);
-    
+
 }
