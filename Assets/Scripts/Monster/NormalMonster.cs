@@ -9,11 +9,12 @@ public class NormalMonster : Monster, IDamageable
     [SerializeField] private int MaxHp;
     private ObservableProperty<int> CurrentHp = new();
     private ObservableProperty<bool> IsMoving = new();
-    private ObservableProperty<bool> IsAttacking = new();
+    //private ObservableProperty<bool> IsAttacking = new();
     private ObservableProperty<bool> IsAlive = new();
     private Animator _animator;
 
     [SerializeField] private DetectArea _detectArea;
+    [SerializeField] private GameObject _monsterAttack;
 
     [Header("Config Navmesh")]
     private NavMeshAgent _navMeshAgent;
@@ -61,6 +62,7 @@ public class NormalMonster : Monster, IDamageable
         {
             IsAlive.Value = false;
             Death(IsAlive.Value);
+            _monsterAttack.SetActive(false);
         }
     }
     
