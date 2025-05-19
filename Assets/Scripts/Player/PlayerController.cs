@@ -1,5 +1,7 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
@@ -8,6 +10,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private PlayerStatus _status;
     private PlayerMovement _movement;
     private Animator _animator;
+    private InputAction _aimInputAction;
 
     [SerializeField] private Image _aimImage;
     [SerializeField] private Animator _aimAnimator;
@@ -29,6 +32,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         _movement = GetComponent<PlayerMovement>();
         _animator = GetComponent<Animator>();
         _aimImage = _aimAnimator.GetComponent<Image>();
+        _aimInputAction = GetComponent<PlayerInput>().actions["Aim"];
 
         _hpUI.SetImageFillAmount(1);
         _status.CurrentHp.Value = _status.MaxHp;
@@ -39,23 +43,16 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (!isControlActive) return;
 
         HandleMovement();
-        HandleAiming();
-        HandleShooting();
-        //Debug.DrawRay(_aimCamera.transform.position, _aimCamera.transform.forward * 100, Color.red, 2);
-
-        if (Input.GetKey(KeyCode.Q))
-        {
-            TakeDamage(1);
-        }
-        if (Input.GetKey(KeyCode.E))
-        {
-            RecoveryHP(1);
-        }
+        //HandleAiming();
+        //HandleShooting();
+        //Debug.DrawRay(_aimCamera.transform.position, _aimCamera.transform.forward * 100, Color.red, 2);       
     }
 
-    private void HandleShooting()
+    //private void HandleShooting()
+    public void OnShoot()
     {
-        if (_status.IsAming.Value && Input.GetKey(_shootKey))
+        //if (_status.IsAming.Value && Input.GetKey(_shootKey))
+        if (_status.IsAming.Value)
         {
             _status.IsAttacking.Value = _gun.Shoot();
         }
@@ -85,16 +82,27 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         if (_status.IsAming.Value)
         {
-            Vector3 input = _movement.GetInputDirection();
-            _animator.SetFloat("X", input.x);
-            _animator.SetFloat("Z", input.z);
+            //Vector2 input = _movement.InputDirection;
+            //_animator.SetFloat("X", input.x);
+            //_animator.SetFloat("Z", input.y);
+
+            _animator.SetFloat("X", _movement.InputDirection.x);
+            _animator.SetFloat("Z", _movement.InputDirection.y);
         }
     }
 
-    private void HandleAiming()
+
+    private void HandleAiming(InputAction.CallbackContext ctx)
     {
-        _status.IsAming.Value = Input.GetKey(_aimkey);
+        //_status.IsAming.Value = Input.GetKey(_aimkey);
+        _status.IsAming.Value = ctx.started;
+
+        // ctx.started => 키 입력이 시작됐는지 판별
+        // ctx.performed => 키 입력이 진행중인지 판별
+        // ctx.canceled => 키 입력이 취소됐는지(떼어졌는지) 판별
+
     }
+
 
     public void TakeDamage(int value)
     {
@@ -111,7 +119,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void Dead()
     {
-        _animator.SetTrigger("IsAlive");        
+        _animator.SetTrigger("IsAlive");
         isControlActive = false;
     }
 
@@ -122,6 +130,11 @@ public class PlayerController : MonoBehaviour, IDamageable
         _status.IsAming.Subscribe(SetAimAnimation);
         _status.IsAttacking.Subscribe(SetAttackAnimation);
         _status.CurrentHp.Subscribe(SetHPUIGuage);
+
+        // inputs---
+        _aimInputAction.Enable();
+        _aimInputAction.started += HandleAiming;
+        _aimInputAction.canceled += HandleAiming;
     }
 
     public void UnsubscribeEvents()
@@ -131,6 +144,11 @@ public class PlayerController : MonoBehaviour, IDamageable
         _status.IsAming.UnSubscribe(SetAimAnimation);
         _status.IsAttacking.UnSubscribe(SetAttackAnimation);
         _status.CurrentHp.UnSubscribe(SetHPUIGuage);
+
+        // inputs---
+        _aimInputAction.Disable();
+        _aimInputAction.started -= HandleAiming;
+        _aimInputAction.canceled -= HandleAiming;
     }
 
     private void SetAimAnimation(bool value)

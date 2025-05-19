@@ -1,9 +1,8 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    
-
     [Header("Reference")]
     [SerializeField] private Transform _avatar;
     [SerializeField] private Transform _aim;
@@ -17,6 +16,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField][Range(0, 5)] private float _mouseSensitivity = 1;
 
     private Vector2 _currentRotation;
+    public Vector2 InputDirection { get; private set; }
+    public Vector2 MouseDirection { get; private set; }
+
     private void Awake() => Init();
 
     private void Init()
@@ -40,13 +42,13 @@ public class PlayerMovement : MonoBehaviour
 
     public Vector3 SetAimRotation()
     {
-        Vector2 mouseDir = GetMouseDirection();
+        //Vector2 mouseDir = GetMouseDirection();
 
         // x축의 경우라면 제한을 걸 필요가 없음
-        _currentRotation.x += mouseDir.x;
+        _currentRotation.x += MouseDirection.x;
 
         // y축의 경우엔 각도 제한을 걸어야 함.
-        _currentRotation.y = Mathf.Clamp(_currentRotation.y + mouseDir.y, _minPitch, _maxPitch);
+        _currentRotation.y = Mathf.Clamp(_currentRotation.y + MouseDirection.y, _minPitch, _maxPitch);
 
         // 캐릭터 오브젝트의 경우에는 Y축 회전만 반영
         transform.rotation = Quaternion.Euler(0, _currentRotation.x, 0);
@@ -61,14 +63,6 @@ public class PlayerMovement : MonoBehaviour
         return rotateDirVector;
     }
 
-    private Vector2 GetMouseDirection()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * _mouseSensitivity;
-        float mouseY = -Input.GetAxis("Mouse Y") * _mouseSensitivity;
-
-        return new Vector2(mouseX, mouseY);
-    }
-
     public void SetAvatarRotation(Vector3 direction)
     {
         if(direction == Vector3.zero) return;
@@ -80,15 +74,25 @@ public class PlayerMovement : MonoBehaviour
 
     public Vector3 GetMoveDirection()
     {
-        Vector3 input = GetInputDirection();
-
         Vector3 direction =
-            (transform.right * input.x) +
-            (transform.forward * input.z);
+            (transform.right * InputDirection.x) +
+            (transform.forward * InputDirection.y);
 
         return direction.normalized;
+    }  
+
+    public void OnMove(InputValue value)
+    {
+        InputDirection = value.Get<Vector2>();
+    }
+    public void OnRotate(InputValue value)
+    {
+        Vector2 mouseDir = value.Get<Vector2>();
+        mouseDir.y *= -1;
+        MouseDirection = mouseDir * _mouseSensitivity;
     }
 
+    /*
     public Vector3 GetInputDirection()
     {
         float x = Input.GetAxisRaw("Horizontal");
@@ -96,4 +100,15 @@ public class PlayerMovement : MonoBehaviour
 
         return new Vector3(x, 0, z);
     }
+    */
+
+    /*
+     private Vector2 GetMouseDirection()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * _mouseSensitivity;
+        float mouseY = -Input.GetAxis("Mouse Y") * _mouseSensitivity;
+
+        return new Vector2(mouseX, mouseY);
+    }
+    */
 }
