@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 8666143769890473653}
   - component: {fileID: 4269090340456819297}
   - component: {fileID: 1367619028414943814}
+  - component: {fileID: 22014339861291926}
   m_Layer: 3
   m_Name: NormalMonter
   m_TagString: Untagged
@@ -238,6 +239,19 @@ CapsuleCollider:
   m_Height: 2.180237
   m_Direction: 1
   m_Center: {x: 0.0044906735, y: 1.0385998, z: -0.012440205}
+--- !u!114 &22014339861291926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8118926772518238356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e10bdffeb524987468d5513e706f8bce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _component: {fileID: 8666143769890473653}
 --- !u!1001 &1639503138172805221
 PrefabInstance:
   m_ObjectHideFlags: 0

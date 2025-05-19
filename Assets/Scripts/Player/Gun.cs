@@ -61,8 +61,8 @@ public class Gun : MonoBehaviour
         
         if (Physics.Raycast(ray, out hit, _attackRange, _targetLayer))
         {
+            return ReferenceRegistry.GetProvider(hit.collider.gameObject).GetAs<NormalMonster>() as IDamageable;
             //Debug.Log(hit.collider.name);
-            return hit.transform.GetComponent<IDamageable>();
         }
 
         return null;
