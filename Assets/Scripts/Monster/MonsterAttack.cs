@@ -53,7 +53,8 @@ public class MonsterAttack : MonoBehaviour
             
             if (_attackTime <= 1.77 && _attackTime >= 1.75 && other != null && other.CompareTag("Player"))
             {
-                other.GetComponent<IDamageable>().TakeDamage(_monsterDamage);
+                IDamageable playerAttack = ReferenceRegistry.GetProvider(other.gameObject).GetAs<PlayerController>() as IDamageable;
+                playerAttack.TakeDamage(_monsterDamage);
             }
         }
     }
