@@ -11,6 +11,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private int _shootDamage;
     [SerializeField] private float _shootDelay;
     [SerializeField] private AudioClip _shootSFX;
+    [SerializeField] private ParticleSystem _fireParticles;
 
     private CinemachineImpulseSource _impulse;
     private Camera _camera;
@@ -37,7 +38,14 @@ public class Gun : MonoBehaviour
         PlayShootEffect();
         _currentCount = _shootDelay;
 
-        IDamageable target = RayShoot();
+        RaycastHit hit;
+        IDamageable target = RayShoot(out hit);
+
+        if(!hit.Equals(default))
+        {
+            PlayFireEffect(hit.point, Quaternion.LookRotation(hit.normal));
+        }
+
         if (target == null) return true;
 
         target.TakeDamage(_shootDamage);
@@ -53,7 +61,7 @@ public class Gun : MonoBehaviour
         _currentCount -= Time.deltaTime;
     }
 
-    private IDamageable RayShoot()
+    private IDamageable RayShoot(out RaycastHit hitTarget)
     {
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
         //Debug.DrawRay(_camera.transform.position, _camera.transform.forward * 100, Color.red, 3);
@@ -61,11 +69,20 @@ public class Gun : MonoBehaviour
         
         if (Physics.Raycast(ray, out hit, _attackRange, _targetLayer))
         {
-            return ReferenceRegistry.GetProvider(hit.collider.gameObject).GetAs<NormalMonster>() as IDamageable;
-            //Debug.Log(hit.collider.name);
+            hitTarget = hit;
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Monster"))
+            {
+                return ReferenceRegistry.GetProvider(hit.collider.gameObject).GetAs<NormalMonster>() as IDamageable;
+            }
         }
 
+        hitTarget = hit;
         return null;
+    }
+
+    private void PlayFireEffect(Vector3 position, Quaternion rotation)
+    {
+        Instantiate(_fireParticles, position, rotation);
     }
 
     private void PlayShootSound()

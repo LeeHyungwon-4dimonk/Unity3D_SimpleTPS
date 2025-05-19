@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private PlayerMovement _movement;
     private Animator _animator;
     private InputAction _aimInputAction;
+    private InputAction _shootInputAction;
 
     [SerializeField] private Image _aimImage;
     [SerializeField] private Animator _aimAnimator;
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         _animator = GetComponent<Animator>();
         _aimImage = _aimAnimator.GetComponent<Image>();
         _aimInputAction = GetComponent<PlayerInput>().actions["Aim"];
+        _shootInputAction = GetComponent<PlayerInput>().actions["Shoot"];
 
         _hpUI.SetImageFillAmount(1);
         _status.CurrentHp.Value = _status.MaxHp;
@@ -44,15 +46,20 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         HandleMovement();
         //HandleAiming();
-        //HandleShooting();
+        OnShoot();
         //Debug.DrawRay(_aimCamera.transform.position, _aimCamera.transform.forward * 100, Color.red, 2);       
     }
 
     //private void HandleShooting()
     public void OnShoot()
     {
+        // _shootInputAction.WasPressedThisFrame(); => 이번 프레임에 눌렀는가? (GetKeyDown)
+        // _shootInputAction.WasReleasedThisFrame(); => 이번 프레임에 떼어졌는가? (GetKeyUp)
+        // _shootInputAction.IsPressed(); => 지금 눌려있는가? (GetKey)
+
+
         //if (_status.IsAming.Value && Input.GetKey(_shootKey))
-        if (_status.IsAming.Value)
+        if (_status.IsAming.Value && _shootInputAction.IsPressed())
         {
             _status.IsAttacking.Value = _gun.Shoot();
         }
@@ -100,7 +107,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         // ctx.started => 키 입력이 시작됐는지 판별
         // ctx.performed => 키 입력이 진행중인지 판별
         // ctx.canceled => 키 입력이 취소됐는지(떼어졌는지) 판별
-
     }
 
 
